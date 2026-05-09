@@ -62,7 +62,7 @@ public class JiraWebhookNotificationService {
 
     private Set<String> trackedChangeFields(Map<String, Object> payload) {
         Set<String> fields = new LinkedHashSet<>();
-        for (Map<String, Object> item : readMapList(payload, "changelog", "items")) {
+        for (Map<?, ?> item : readMapList(payload, "changelog", "items")) {
             String field = readString(item, "field");
             if (field == null) {
                 continue;
@@ -94,41 +94,43 @@ public class JiraWebhookNotificationService {
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientResponseException ex) {
+            String responseBody = ex.getResponseBodyAsString();
+            String details = StringUtils.hasText(responseBody)
+                    ? " response: " + responseBody.substring(0, Math.min(responseBody.length(), 200))
+                    : "";
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY,
-                    "Notification callback failed with status: " + ex.getStatusCode().value()
+                    "Notification callback failed with status: " + ex.getStatusCode().value() + details
             );
         }
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Map<String, Object>> readMapList(Map<String, Object> payload, String... path) {
+    private List<Map<?, ?>> readMapList(Map<?, ?> payload, String... path) {
         Object node = readObject(payload, path);
         if (!(node instanceof List<?> list)) {
             return List.of();
         }
-        List<Map<String, Object>> maps = new ArrayList<>();
+        List<Map<?, ?>> maps = new ArrayList<>();
         for (Object item : list) {
             if (item instanceof Map<?, ?> map) {
-                maps.add((Map<String, Object>) map);
+                maps.add(map);
             }
         }
         return maps;
     }
 
-    @SuppressWarnings("unchecked")
-    private Object readObject(Map<String, Object> payload, String... path) {
+    private Object readObject(Map<?, ?> payload, String... path) {
         Object current = payload;
         for (String key : path) {
             if (!(current instanceof Map<?, ?> map)) {
                 return null;
             }
-            current = ((Map<String, Object>) map).get(key);
+            current = map.get(key);
         }
         return current;
     }
 
-    private String readString(Map<String, Object> payload, String... path) {
+    private String readString(Map<?, ?> payload, String... path) {
         Object value = readObject(payload, path);
         return value instanceof String text ? text : null;
     }
