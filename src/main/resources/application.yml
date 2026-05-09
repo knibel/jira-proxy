@@ -9,3 +9,7 @@ jira:
   base-url: ${JIRA_BASE_URL:https://your-jira-instance.atlassian.net}
   username: ${JIRA_USERNAME:change-me}
   password: ${JIRA_PASSWORD:change-me}
+  webhook:
+    enabled: ${JIRA_WEBHOOK_ENABLED:false}
+    secret: ${JIRA_WEBHOOK_SECRET:}
+    callback-url: ${JIRA_WEBHOOK_CALLBACK_URL:}
