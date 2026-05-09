@@ -83,7 +83,6 @@ public class JiraWebhookNotificationService {
         notification.put("changedFields", trackedChanges.stream().toList());
         notification.put("labels", readObject(payload, "issue", "fields", "labels"));
         notification.put("assignee", readObject(payload, "issue", "fields", "assignee"));
-        notification.put("source", payload);
         return notification;
     }
 
@@ -97,7 +96,7 @@ public class JiraWebhookNotificationService {
         } catch (RestClientResponseException ex) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_GATEWAY,
-                    "Notification callback failed for URL: " + jiraWebhookProperties.callbackUrl()
+                    "Notification callback failed with status: " + ex.getStatusCode().value()
             );
         }
     }
