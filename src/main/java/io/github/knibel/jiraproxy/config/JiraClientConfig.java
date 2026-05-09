@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 @Configuration
-@EnableConfigurationProperties(JiraProperties.class)
+@EnableConfigurationProperties({JiraProperties.class, JiraWebhookProperties.class})
 public class JiraClientConfig {
 
     @Bean
