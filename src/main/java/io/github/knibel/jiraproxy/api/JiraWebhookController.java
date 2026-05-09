@@ -1,7 +1,6 @@
 package io.github.knibel.jiraproxy.api;
 
 import io.github.knibel.jiraproxy.jira.JiraWebhookNotificationService;
-import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +23,7 @@ public class JiraWebhookController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> receiveWebhook(
             @RequestHeader(value = "X-Jira-Webhook-Secret", required = false) String providedSecret,
-            @Valid @RequestBody Map<String, Object> payload) {
+            @RequestBody Map<String, Object> payload) {
         boolean forwarded = jiraWebhookNotificationService.processWebhook(payload, providedSecret);
         return ResponseEntity.accepted().body(Map.of("forwarded", forwarded));
     }

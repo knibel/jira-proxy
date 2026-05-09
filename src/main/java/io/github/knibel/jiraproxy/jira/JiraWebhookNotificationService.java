@@ -95,7 +95,10 @@ public class JiraWebhookNotificationService {
                     .retrieve()
                     .toBodilessEntity();
         } catch (RestClientResponseException ex) {
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "Notification callback failed");
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_GATEWAY,
+                    "Notification callback failed for URL: " + jiraWebhookProperties.callbackUrl()
+            );
         }
     }
 
