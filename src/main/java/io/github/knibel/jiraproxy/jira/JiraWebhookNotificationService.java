@@ -76,15 +76,15 @@ public class JiraWebhookNotificationService {
     }
 
     private Map<String, Object> buildNotification(Map<String, Object> payload, Set<String> trackedChanges) {
-        return Map.of(
-                "eventType", payload.get("webhookEvent"),
-                "issueKey", readString(payload, "issue", "key"),
-                "issueType", readString(payload, "issue", "fields", "issuetype", "name"),
-                "changedFields", trackedChanges.stream().toList(),
-                "labels", readObject(payload, "issue", "fields", "labels"),
-                "assignee", readObject(payload, "issue", "fields", "assignee"),
-                "source", payload
-        );
+        Map<String, Object> notification = new java.util.LinkedHashMap<>();
+        notification.put("eventType", payload.get("webhookEvent"));
+        notification.put("issueKey", readString(payload, "issue", "key"));
+        notification.put("issueType", readString(payload, "issue", "fields", "issuetype", "name"));
+        notification.put("changedFields", trackedChanges.stream().toList());
+        notification.put("labels", readObject(payload, "issue", "fields", "labels"));
+        notification.put("assignee", readObject(payload, "issue", "fields", "assignee"));
+        notification.put("source", payload);
+        return notification;
     }
 
     private void sendNotification(Map<String, Object> notification) {
