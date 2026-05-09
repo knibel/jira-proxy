@@ -1,0 +1,11 @@
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OIDC_ISSUER_URI:http://localhost:8081/realms/example}
+
+jira:
+  base-url: ${JIRA_BASE_URL:https://your-jira-instance.atlassian.net}
+  username: ${JIRA_USERNAME:change-me}
+  password: ${JIRA_PASSWORD:change-me}
